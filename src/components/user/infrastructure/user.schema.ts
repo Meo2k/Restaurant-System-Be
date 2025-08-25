@@ -30,14 +30,6 @@ export class User {
     @Prop()
     code_expired: string;
 
-    @Prop()
-    refesh_token: string;
-
-    @Prop()
-    refesh_token_expired: string;
-
-   
-
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

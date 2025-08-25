@@ -13,7 +13,7 @@ export class UserRepositoryImpl implements IUserRepository{
     async findByEmail(email: string): Promise<UserDomain | null> {
         const user =  await this.userModel.findOne({email}); 
         if (!user){
-            return null 
+            return null
         }
         return new UserDomain(user.email, user.password); 
     }

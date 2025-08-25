@@ -3,12 +3,13 @@ import { IUserRepository } from './user.repository';
 import { hashPasswordHelper } from '@/helper/util';
 import { UserDomain } from '../domain/user.domain';
 import { EmailAlreadyExistsError } from '@/config/error/error';
+import { IUSER_REPOSITORY } from '@/config/constant/constant';
 
 
 @Injectable()
 export class UserService {
   constructor(
-    @Inject('IUserRepository')
+    @Inject(IUSER_REPOSITORY)
     private readonly userRepo : IUserRepository, 
   ){}
   async registerUser(email: string , password: string): Promise<UserDomain> {

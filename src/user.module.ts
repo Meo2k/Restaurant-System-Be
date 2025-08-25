@@ -4,6 +4,7 @@ import { UserService } from './components/user/application/user.service';
 import { UserRepositoryImpl } from './components/user/infrastructure/user.repository.impl';
 import { MongooseModule } from '@nestjs/mongoose';
 import { User, UserSchema } from './components/user/infrastructure/user.schema';
+import { IUSER_REPOSITORY } from './config/constant/constant';
 
 
 
@@ -15,11 +16,11 @@ import { User, UserSchema } from './components/user/infrastructure/user.schema';
   providers: [
     UserService,
     {
-      provide: "IUserRepository",
+      provide: IUSER_REPOSITORY,
       useClass: UserRepositoryImpl,
     },
   ],
-  exports: [UserService]
+  exports: [UserService, IUSER_REPOSITORY]
 
 })
 export class UserModule {}
