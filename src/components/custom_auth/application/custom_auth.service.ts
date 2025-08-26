@@ -9,10 +9,11 @@ export class CustomAuthService{
         private readonly customAuthRepo : ICustomAuthRepository, 
 
     ){}
-    validateUser(email :string , password: string){
-        return this.customAuthRepo.validateUser(email , password); 
-    }
+   
     reExposeRefreshToken(){}
     reExposeAccessToken(){}
+    async loginUser(user: any){
+        return await this.customAuthRepo.login(user)
+    }
 
 }

@@ -1,22 +1,31 @@
 
 import { Strategy } from 'passport-local';
 import { PassportStrategy } from '@nestjs/passport';
-import { Injectable, UnauthorizedException } from '@nestjs/common';
-import { CustomAuthService } from '../../application/custom_auth.service';
+import { Inject, Injectable, UnauthorizedException } from '@nestjs/common';
+import { ICUSTOME_AUTH_REPOSITORY } from '@/config/constant/constant';
+import { ICustomAuthRepository } from '../../application/custom_auth.repository';
+import { UserDomain } from '@/components/user/domain/user.domain';
 
 @Injectable()
 export class LocalStrategy extends PassportStrategy(Strategy) {
   constructor(
-    private readonly customAuthService: CustomAuthService
+    @Inject(ICUSTOME_AUTH_REPOSITORY)
+    private readonly customAuthRepo : ICustomAuthRepository, 
 ) {
-    super();
+    super({
+          usernameField: 'email', // Specify 'email' as the field for the username
+        });
   }
 
-  async validate(username: string, password: string): Promise<any> {
-    const user = await this.customAuthService.validateUser(username, password);
+  async validate(email: string, password: string): Promise<any> {
+    const user = await this.customAuthRepo.validateUser(email, password) as unknown as UserDomain;
     if (!user) {
       throw new UnauthorizedException();
     }
-    return user;
+    return {
+      email : user.getEmail(), 
+      username: user.getUserName(), 
+      isActive : user.getIsActive(), 
+    };
   }
 }

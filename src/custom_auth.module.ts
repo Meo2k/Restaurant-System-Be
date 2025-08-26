@@ -9,12 +9,23 @@ import { PassportModule } from "@nestjs/passport";
 import { LocalStrategy } from "./components/custom_auth/infrastructure/passport/local.strategy";
 import { UserModule } from "./user.module";
 import { ICUSTOME_AUTH_REPOSITORY, IUSER_REPOSITORY } from "./config/constant/constant";
+import { JwtModule } from "@nestjs/jwt";
+import { ConfigModule, ConfigService } from "@nestjs/config";
+import { JwtStrategy } from "./components/custom_auth/infrastructure/passport/jwt.strategy";
 
 @Module({
     imports: [
         MongooseModule.forFeature([
             { name: RefreshToken.name, schema: RefreshTokenSchema }
         ]),
+        JwtModule.registerAsync({
+          imports: [ConfigModule], 
+          useFactory: async (configService: ConfigService) => ({
+            secret: configService.get<string>('JWT_SECRET'), // Get secret from environment variable
+            signOptions: { expiresIn: '60s' }, // Example option
+          }),
+          inject: [ConfigService], // Inject ConfigService
+        }),
         UserModule, 
         PassportModule
     ],
@@ -22,6 +33,7 @@ import { ICUSTOME_AUTH_REPOSITORY, IUSER_REPOSITORY } from "./config/constant/co
     providers: [
         CustomAuthService, 
         LocalStrategy, 
+        JwtStrategy, 
         {
             provide: ICUSTOME_AUTH_REPOSITORY, 
             useClass : CustomAuthRepositoryImp
